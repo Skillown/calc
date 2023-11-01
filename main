@@ -1,0 +1,59 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Введите выражение (например, 1 + 1): ")
+	text, _ := reader.ReadString('\n') // Ждет ввода данных в формате строки
+	text = strings.TrimSpace(text)     // Очищает все пустоты(пробелы,табуляцию)
+
+	parts := strings.Fields(text) // Проверка на формат из 2х чисел и одного оператора
+	if len(parts) != 3 {
+		fmt.Println("Ошибка: неверный формат ввода. Используйте формат 'число оператор число'.")
+		return
+	}
+
+	num1, err1 := strconv.Atoi(parts[0])
+	operator := parts[1]
+	num2, err2 := strconv.Atoi(parts[2])
+
+	if err1 != nil || err2 != nil {
+		fmt.Println("Ошибка: введите корректные числа.")
+		return
+	}
+
+	if num1 < 1 || num1 > 10 || num2 < 1 || num2 > 10 {
+		fmt.Println("Ошибка: числа должны быть в диапазоне от 1 до 10.")
+		return
+	}
+
+	result := 0
+
+	switch operator {
+	case "+":
+		result = num1 + num2
+	case "-":
+		result = num1 - num2
+	case "*":
+		result = num1 * num2
+	case "/":
+		if num2 != 0 {
+			result = num1 / num2
+		} else {
+			fmt.Println("Ошибка: деление на ноль.")
+			return
+		}
+	default:
+		fmt.Println("Ошибка: неверный оператор.")
+		return
+	}
+
+	fmt.Printf("Результат: %d\n", result)
+}
