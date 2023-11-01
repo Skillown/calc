@@ -1,0 +1,126 @@
+package main
+
+import (
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+var romanArray = []string{"0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
+	"XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII", "XXIII", "XXIV",
+	"XXV", "XXVI", "XXVII", "XXVIII", "XXIX", "XXX", "XXXI", "XXXII", "XXXIII", "XXXIV", "XXXV", "XXXVI",
+	"XXXVII", "XXXVIII", "XXXIX", "XL", "XLI", "XLII", "XLIII", "XLIV", "XLV", "XLVI", "XLVII", "XLVIII",
+	"XLIX", "L", "LI", "LII", "LIII", "LIV", "LV", "LVI", "LVII", "LVIII", "LIX", "LX", "LXI", "LXII",
+	"LXIII", "LXIV", "LXV", "LXVI", "LXVII", "LXVIII", "LXIX", "LXX", "LXXI", "LXXII", "LXXIII", "LXXIV",
+	"LXXV", "LXXVI", "LXXVII", "LXXVIII", "LXXIX", "LXXX", "LXXXI", "LXXXII", "LXXXIII", "LXXXIV", "LXXXV",
+	"LXXXVI", "LXXXVII", "LXXXVIII", "LXXXIX", "XC", "XCI", "XCII", "XCIII", "XCIV", "XCV", "XCVI", "XCVII",
+	"XCVIII", "XCIX", "C"}
+
+func main() {
+	fmt.Println("Введите два числа (арабских или римских) от 1 до 10: ")
+	var expression string
+	fmt.Scanln(&expression)
+	result, err := parse(expression)
+	if err != nil {
+		fmt.Println("Ошибка:", err)
+		os.Exit(1)
+	}
+	fmt.Println(result)
+}
+
+func parse(expression string) (string, error) {
+	num1, num2 := 0, 0
+	var oper string
+	var result string
+	var isRoman bool
+	operands := strings.FieldsFunc(expression, func(r rune) bool {
+		return r == '+' || r == '-' || r == '*' || r == '/'
+	})
+
+	if len(operands) != 2 {
+		return "", fmt.Errorf("Должно быть два операнда")
+	}
+
+	oper = detectOperation(expression)
+	if oper == "" {
+		return "", fmt.Errorf("Неподдерживаемая математическая операция")
+	}
+
+	if isRomanNumeral(operands[0]) && isRomanNumeral(operands[1]) {
+		num1 = romanToArabic(operands[0])
+		num2 = romanToArabic(operands[1])
+		isRoman = true
+	} else if !isRomanNumeral(operands[0]) && !isRomanNumeral(operands[1]) {
+		num1, _ = strconv.Atoi(operands[0])
+		num2, _ = strconv.Atoi(operands[1])
+		isRoman = false
+	} else {
+		return "", fmt.Errorf("Числа должны быть в одном формате")
+	}
+
+	if num1 > 10 || num2 > 10 {
+		return "", fmt.Errorf("Числа должны быть от 1 до 10")
+	}
+
+	arabian := calc(num1, num2, oper)
+
+	if isRoman {
+		if arabian <= 0 {
+			return "", fmt.Errorf("Римское число должно быть больше нуля")
+		}
+		result = arabicToRoman(arabian)
+	} else {
+		result = strconv.Itoa(arabian)
+	}
+
+	return result, nil
+}
+
+func detectOperation(expression string) string {
+	if strings.Contains(expression, "+") {
+		return "+"
+	} else if strings.Contains(expression, "-") {
+		return "-"
+	} else if strings.Contains(expression, "*") {
+		return "*"
+	} else if strings.Contains(expression, "/") {
+		return "/"
+	}
+	return ""
+}
+
+func calc(a, b int, oper string) int {
+	if oper == "+" {
+		return a + b
+	} else if oper == "-" {
+		return a - b
+	} else if oper == "*" {
+		return a * b
+	} else if oper == "/" {
+		return a / b
+	}
+	return 0
+}
+
+func isRomanNumeral(val string) bool {
+	for i := 0; i < len(romanArray); i++ {
+		if val == romanArray[i] {
+			return true
+		}
+	}
+	return false
+}
+
+func romanToArabic(roman string) int {
+	for i := 0; i < len(romanArray); i++ {
+		if roman == romanArray[i] {
+			return i
+		}
+	}
+	return -1
+}
+
+func arabicToRoman(arabic int) string {
+	return romanArray[arabic]
+}
