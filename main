@@ -8,6 +8,16 @@ import (
 	"strings"
 )
 
+var romanArray = []string{"0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
+	"XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII", "XXIII", "XXIV",
+	"XXV", "XXVI", "XXVII", "XXVIII", "XXIX", "XXX", "XXXI", "XXXII", "XXXIII", "XXXIV", "XXXV", "XXXVI",
+	"XXXVII", "XXXVIII", "XXXIX", "XL", "XLI", "XLII", "XLIII", "XLIV", "XLV", "XLVI", "XLVII", "XLVIII",
+	"XLIX", "L", "LI", "LII", "LIII", "LIV", "LV", "LVI", "LVII", "LVIII", "LIX", "LX", "LXI", "LXII",
+	"LXIII", "LXIV", "LXV", "LXVI", "LXVII", "LXVIII", "LXIX", "LXX", "LXXI", "LXXII", "LXXIII", "LXXIV",
+	"LXXV", "LXXVI", "LXXVII", "LXXVIII", "LXXIX", "LXXX", "LXXXI", "LXXXII", "LXXXIII", "LXXXIV", "LXXXV",
+	"LXXXVI", "LXXXVII", "LXXXVIII", "LXXXIX", "XC", "XCI", "XCII", "XCIII", "XCIV", "XCV", "XCVI", "XCVII",
+	"XCVIII", "XCIX", "C"}
+
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Введите выражение (например, 1 + 1): ")
@@ -20,19 +30,24 @@ func main() {
 		return
 	}
 
-	num1, err1 := strconv.Atoi(parts[0])
+	num1, _ := strconv.Atoi(parts[0])
 	operator := parts[1]
-	num2, err2 := strconv.Atoi(parts[2])
+	num2, _ := strconv.Atoi(parts[2])
 
-	if err1 != nil || err2 != nil {
-		fmt.Println("Ошибка: введите корректные числа.")
-		return
+	myarr1, _ := strconv.Atoi(romanArray[num1])
+	if num1 == myarr1 {
+		num1 = myarr1
 	}
 
-	if num1 < 1 || num1 > 10 || num2 < 1 || num2 > 10 {
-		fmt.Println("Ошибка: числа должны быть в диапазоне от 1 до 10.")
-		return
+	myarr2, _ := strconv.Atoi(romanArray[num2])
+	if num2 == myarr2 {
+		num2 = myarr2
 	}
+
+	//if num1 < 1 || num1 > 10 || num2 < 1 || num2 > 10 {
+	//	fmt.Println("Ошибка: числа должны быть в диапазоне от 1 до 10.")
+	//	return
+	//}
 
 	result := 0
 
